@@ -1,14 +1,5 @@
 import got from 'got';
-
-function urlJoin(...parts) {
-  return parts.map((p, idx) => {
-    if (idx === 0) {
-      return p.replace(/\/+$/, '');
-    } else {
-      return p.replace(/^\/+/, '');
-    }
-  }).join('/');
-}
+import urlJoin from './url-join';
 
 class HydrusClient {
   constructor(url) {
@@ -37,8 +28,11 @@ class HydrusClient {
       const res = await got(url, opts);
       return res.body;
     } catch (err) {
+      if (err.code === 'ENOTFOUND') {
+        throw err;
+      }
       err.error = err.response.body.error;
-      console.log(err.error);
+      err.message = `${err.statusMessage}[${err.statusCode}]: ` + err.error.join('.') + '.';
 
       throw err;
     }
