@@ -1,6 +1,6 @@
 {
   "name": "app-context-hydrus-client",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "hydrus client initializer for app-context",
   "keywords": [
     "app-context",

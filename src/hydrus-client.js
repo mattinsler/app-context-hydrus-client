@@ -28,11 +28,10 @@ class HydrusClient {
       const res = await got(url, opts);
       return res.body;
     } catch (err) {
-      if (err.code === 'ENOTFOUND') {
-        throw err;
+      if (err.response && err.response.body && Array.isArray(err.response.body.error)) {
+        err.error = err.response.body.error;
+        err.message = `[${err.statusCode}] ${err.statusMessage}: ` + err.error.join('. ') + '.';
       }
-      err.error = err.response.body.error;
-      err.message = `${err.statusMessage}[${err.statusCode}]: ` + err.error.join('.') + '.';
 
       throw err;
     }
