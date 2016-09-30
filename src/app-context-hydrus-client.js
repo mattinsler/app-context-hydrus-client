@@ -6,7 +6,6 @@ async function getOperations(registryUrl, serviceName) {
   const url = urlJoin(registryUrl, 'services', serviceName, 'operations');
   const { body: operations } = await got(url, { json: true });
   const client = new HydrusClient(`http://${serviceName}`);
-  // const client = new HydrusClient(`http://localhost:3003`);
 
   return operations.map(({ service, name }) => ({
     name,
@@ -24,9 +23,9 @@ function appContextHydrusClient(registryUrl, services = []) {
       services.map(async (serviceName) => {
         service[serviceName] = {};
         const operations = await getOperations(registryUrl, serviceName);
-        operations.forEach(({ name, execute }) => {
-          service[serviceName][name] = execute;
-        });
+        for (let op of operations) {
+          service[serviceName][op.name] = op.execute;
+        }
       })
     );
 
